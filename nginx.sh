@@ -5,8 +5,11 @@
 ############################################
 
 #Functions
-update () { yes | dnf check-update && dnf update && yum check-update && yum update; }
+update () { yes | dnf check-update && sudo dnf update && yum check-update && sudo yum update; }
 
+
+
+#Update the System
 
 echo "Would you like to update the system? (y/n/e)"
 
@@ -25,7 +28,7 @@ else
 	exit 1
 fi
 
-
+#Install NGINX
 
 echo "Would you like to Install NGINX? (y/n/e)"
 
@@ -33,21 +36,17 @@ read -n1 yesorno
 echo " "
 
 if [ "$yesorno" = y ]; then
-	sudo yum install epel-release
-	sudo yum install nginx
+	yes | sudo yum install epel-release
+	yes | sudo yum install nginx
 	sudo systemctl start nginx
 	sudo systemctl status nginx
 	sudo systemctl enable nginx
-elif [ "$yesorno" = y ]; then
 	read -n1 -p "Is a firewall active?" firewall
 		if [ "$firewall" = y ]; then
 			sudo firewall-cmd --permanent --zone=public --add-service=http
 			sudo firewall-cmd --permanent --zone=public --add-service=https
 			sudo firewall-cmd --reload
 			echo "Visit http://server_domain_name_or_IP"
-		else
-			break
-		fi
 elif [ "$yesorno" = n ]; then
 	echo "Skipping NGINX Install..."
 elif [ "$yesorno" = e ]; then
@@ -58,3 +57,4 @@ else
 	exit 1
 fi
 
+echo "Installer Complete!"
